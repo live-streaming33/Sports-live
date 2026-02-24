@@ -1,13 +1,374 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Sports Live</title>
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body style="background:black; color:white; text-align:center; font-family:Arial;">
+  <title>Sports Stream</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    
+    .font-display { font-family: 'Bebas Neue', sans-serif; }
+    .font-body { font-family: 'Inter', sans-serif; }
+    
+    @keyframes pulse-live {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .live-indicator {
+      animation: pulse-live 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes gradient-shift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .hero-gradient {
+      background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #1e3a5f);
+      background-size: 400% 400%;
+      animation: gradient-shift 15s ease infinite;
+    }
+    
+    .card-hover {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+    
+    .glow-effect {
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+    }
+    
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full font-body bg-slate-900 text-white overflow-auto">
+  <div id="app" class="h-full w-full bg-slate-900 overflow-auto"><!-- Navigation -->
+   <nav class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+     <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center">
+       <svg class="w-6 h-6 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M8 5v14l11-7z" />
+       </svg>
+      </div><span id="app-title" class="font-display text-2xl tracking-wider">SPORTS STREAM</span>
+     </div>
+     <div class="hidden md:flex items-center gap-6"><button class="nav-link text-white font-medium">Live</button> <button class="nav-link text-slate-400 hover:text-white transition-colors">Schedule</button> <button class="nav-link text-slate-400 hover:text-white transition-colors">Highlights</button> <button class="nav-link text-slate-400 hover:text-white transition-colors">Sports</button>
+     </div>
+     <div class="flex items-center gap-3"><button class="p-2 text-slate-400 hover:text-white transition-colors">
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+       </svg></button> <button class="hidden sm:flex items-center gap-2 bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-semibold transition-colors"> <span>Subscribe</span> </button>
+     </div>
+    </div>
+   </nav><!-- Hero Featured Match -->
+   <section class="hero-gradient relative overflow-hidden">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.03%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50"></div>
+    <div class="max-w-7xl mx-auto px-4 py-8 md:py-12 relative">
+     <div class="flex items-center gap-2 mb-4"><span class="live-indicator flex items-center gap-2 bg-red-500 px-3 py-1 rounded-full text-sm font-bold"> <span class="w-2 h-2 bg-white rounded-full"></span> LIVE NOW </span> <span class="text-slate-400 text-sm">UEFA Champions League • Semi-Final</span>
+     </div>
+     <h1 id="hero-title" class="font-display text-4xl md:text-6xl lg:text-7xl tracking-wide mb-6">REAL MADRID vs BAYERN MUNICH</h1>
+     <div class="flex flex-wrap items-center gap-8 mb-8"><!-- Team 1 -->
+      <div class="flex items-center gap-4">
+       <div class="w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl flex items-center justify-center p-2">
+        <svg viewbox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="45" fill="#FEBE10" /> <text x="50" y="58" text-anchor="middle" font-size="24" font-weight="bold" fill="#00529F">
+          RM
+         </text>
+        </svg>
+       </div>
+       <div>
+        <p class="font-display text-3xl md:text-4xl">2</p>
+        <p class="text-slate-400 text-sm">Real Madrid</p>
+       </div>
+      </div><span class="text-slate-500 font-display text-2xl">VS</span> <!-- Team 2 -->
+      <div class="flex items-center gap-4">
+       <div class="w-16 h-16 md:w-20 md:h-20 bg-white rounded-2xl flex items-center justify-center p-2">
+        <svg viewbox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="45" fill="#DC052D" /> <text x="50" y="58" text-anchor="middle" font-size="24" font-weight="bold" fill="#fff">
+          FCB
+         </text>
+        </svg>
+       </div>
+       <div>
+        <p class="font-display text-3xl md:text-4xl">1</p>
+        <p class="text-slate-400 text-sm">Bayern Munich</p>
+       </div>
+      </div>
+      <div class="ml-auto hidden md:block">
+       <p class="text-slate-400 text-sm">Match Time</p>
+       <p class="font-display text-3xl text-red-400" id="match-time">67:34</p>
+      </div>
+     </div>
+     <div class="flex flex-wrap gap-3"><button class="flex items-center gap-2 bg-red-500 hover:bg-red-600 px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 glow-effect">
+       <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24"><path d="M8 5v14l11-7z" />
+       </svg> Watch Live </button> <button class="flex items-center gap-2 bg-slate-700 hover:bg-slate-600 px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105">
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+       </svg> Set Reminder </button>
+     </div>
+    </div>
+   </section><!-- Live Now Section -->
+   <section class="max-w-7xl mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+     <h2 id="live-section-title" class="font-display text-2xl md:text-3xl tracking-wide flex items-center gap-3"><span class="live-indicator w-3 h-3 bg-red-500 rounded-full"></span> LIVE NOW</h2><button class="text-red-400 hover:text-red-300 font-medium transition-colors">View All →</button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="live-games"><!-- Live Game Cards will be inserted here -->
+    </div>
+   </section><!-- Upcoming Matches -->
+   <section class="max-w-7xl mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+     <h2 class="font-display text-2xl md:text-3xl tracking-wide">UPCOMING</h2>
+     <div class="flex gap-2"><button class="sport-filter active bg-red-500 px-4 py-2 rounded-lg text-sm font-medium transition-all" data-sport="all">All</button> <button class="sport-filter bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-all" data-sport="football">⚽ Football</button> <button class="sport-filter bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-all" data-sport="basketball">🏀 Basketball</button> <button class="sport-filter bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-all" data-sport="tennis">🎾 Tennis</button>
+     </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="upcoming-games"><!-- Upcoming Game Cards will be inserted here -->
+    </div>
+   </section><!-- Sports Categories -->
+   <section class="max-w-7xl mx-auto px-4 py-8 pb-12">
+    <h2 class="font-display text-2xl md:text-3xl tracking-wide mb-6">BROWSE SPORTS</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="sports-grid"><!-- Sport Categories will be inserted here -->
+    </div>
+   </section>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      app_title: 'SPORTS STREAM',
+      hero_title: 'REAL MADRID vs BAYERN MUNICH',
+      live_section_title: 'LIVE NOW',
+      primary_color: '#ef4444',
+      secondary_color: '#1e293b',
+      text_color: '#ffffff',
+      accent_color: '#f97316',
+      surface_color: '#334155',
+      font_family: 'Inter',
+      font_size: 16
+    };
 
-<h1 style="color:red;">🔴 Sports Live Stream</h1>
-<p>Live streaming will start soon...</p>
+    // Live games data
+    const liveGames = [
+      { sport: 'football', league: 'Premier League', team1: 'Arsenal', team2: 'Chelsea', score1: 1, score2: 1, time: '54:21', emoji: '⚽' },
+      { sport: 'basketball', league: 'NBA Playoffs', team1: 'Lakers', team2: 'Celtics', score1: 87, score2: 92, time: 'Q3 4:32', emoji: '🏀' },
+      { sport: 'tennis', league: 'ATP Masters', team1: 'Djokovic', team2: 'Alcaraz', score1: '6-4, 3', score2: '6-4, 5', time: 'Set 2', emoji: '🎾' }
+    ];
 
-</body>
-</html>
+    // Upcoming games data
+    const upcomingGames = [
+      { sport: 'football', league: 'La Liga', team1: 'Barcelona', team2: 'Atletico Madrid', date: 'Tomorrow', time: '20:00', emoji: '⚽' },
+      { sport: 'basketball', league: 'NBA', team1: 'Warriors', team2: 'Nuggets', date: 'Tomorrow', time: '21:30', emoji: '🏀' },
+      { sport: 'football', league: 'Serie A', team1: 'Juventus', team2: 'AC Milan', date: 'Sat, May 4', time: '18:00', emoji: '⚽' },
+      { sport: 'tennis', league: 'WTA 1000', team1: 'Swiatek', team2: 'Sabalenka', date: 'Sat, May 4', time: '15:00', emoji: '🎾' }
+    ];
+
+    // Sports categories
+    const sportsCategories = [
+      { name: 'Football', emoji: '⚽', count: 24 },
+      { name: 'Basketball', emoji: '🏀', count: 12 },
+      { name: 'Tennis', emoji: '🎾', count: 8 },
+      { name: 'Baseball', emoji: '⚾', count: 15 },
+      { name: 'Hockey', emoji: '🏒', count: 6 },
+      { name: 'Cricket', emoji: '🏏', count: 4 }
+    ];
+
+    function renderLiveGames(config) {
+      const container = document.getElementById('live-games');
+      const primaryColor = config.primary_color || defaultConfig.primary_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      
+      container.innerHTML = liveGames.map(game => `
+        <div class="card-hover rounded-2xl p-4 cursor-pointer border border-slate-700/50" style="background: ${surfaceColor}">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs text-slate-400">${game.emoji} ${game.league}</span>
+            <span class="live-indicator flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full" style="background: ${primaryColor}">
+              <span class="w-1.5 h-1.5 bg-white rounded-full"></span>
+              ${game.time}
+            </span>
+          </div>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-medium">${game.team1}</span>
+              <span class="font-display text-xl">${game.score1}</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="font-medium">${game.team2}</span>
+              <span class="font-display text-xl">${game.score2}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderUpcomingGames(config, filter = 'all') {
+      const container = document.getElementById('upcoming-games');
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const primaryColor = config.primary_color || defaultConfig.primary_color;
+      
+      const filteredGames = filter === 'all' ? upcomingGames : upcomingGames.filter(g => g.sport === filter);
+      
+      container.innerHTML = filteredGames.map(game => `
+        <div class="card-hover rounded-2xl p-4 cursor-pointer border border-slate-700/50" style="background: ${surfaceColor}">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs text-slate-400">${game.emoji} ${game.league}</span>
+            <span class="text-xs text-slate-400">${game.date} • ${game.time}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <span class="font-medium">${game.team1}</span>
+              <span class="text-slate-500">vs</span>
+              <span class="font-medium">${game.team2}</span>
+            </div>
+            <button class="p-2 rounded-lg transition-colors hover:opacity-80" style="background: ${primaryColor}20; color: ${primaryColor}">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderSportsCategories(config) {
+      const container = document.getElementById('sports-grid');
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      
+      container.innerHTML = sportsCategories.map(sport => `
+        <div class="card-hover rounded-2xl p-4 text-center cursor-pointer border border-slate-700/50" style="background: ${surfaceColor}">
+          <div class="text-4xl mb-2">${sport.emoji}</div>
+          <p class="font-medium text-sm">${sport.name}</p>
+          <p class="text-xs text-slate-400">${sport.count} live</p>
+        </div>
+      `).join('');
+    }
+
+    // Initialize match time counter
+    let matchSeconds = 67 * 60 + 34;
+    function updateMatchTime() {
+      matchSeconds++;
+      const mins = Math.floor(matchSeconds / 60);
+      const secs = matchSeconds % 60;
+      const timeEl = document.getElementById('match-time');
+      if (timeEl) {
+        timeEl.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+      }
+    }
+    setInterval(updateMatchTime, 1000);
+
+    // Sport filter functionality
+    document.querySelectorAll('.sport-filter').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.sport-filter').forEach(b => {
+          b.classList.remove('active', 'bg-red-500');
+          b.classList.add('bg-slate-800');
+        });
+        this.classList.add('active', 'bg-red-500');
+        this.classList.remove('bg-slate-800');
+        
+        const sport = this.dataset.sport;
+        renderUpcomingGames(window.elementSdk?.config || defaultConfig, sport);
+      });
+    });
+
+    // Element SDK initialization
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+          const fontFamily = config.font_family || defaultConfig.font_family;
+          const fontSize = config.font_size || defaultConfig.font_size;
+          const primaryColor = config.primary_color || defaultConfig.primary_color;
+          const textColor = config.text_color || defaultConfig.text_color;
+          
+          // Update text content
+          document.getElementById('app-title').textContent = config.app_title || defaultConfig.app_title;
+          document.getElementById('hero-title').textContent = config.hero_title || defaultConfig.hero_title;
+          document.getElementById('live-section-title').innerHTML = `
+            <span class="live-indicator w-3 h-3 rounded-full" style="background: ${primaryColor}"></span>
+            ${config.live_section_title || defaultConfig.live_section_title}
+          `;
+          
+          // Update fonts
+          document.body.style.fontFamily = `${fontFamily}, Inter, sans-serif`;
+          document.body.style.fontSize = `${fontSize}px`;
+          document.body.style.color = textColor;
+          
+          // Update primary color elements
+          document.querySelectorAll('.bg-red-500').forEach(el => {
+            el.style.backgroundColor = primaryColor;
+          });
+          
+          // Re-render dynamic content
+          renderLiveGames(config);
+          renderUpcomingGames(config);
+          renderSportsCategories(config);
+        },
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.secondary_color || defaultConfig.secondary_color,
+              set: (value) => { config.secondary_color = value; window.elementSdk.setConfig({ secondary_color: value }); }
+            },
+            {
+              get: () => config.surface_color || defaultConfig.surface_color,
+              set: (value) => { config.surface_color = value; window.elementSdk.setConfig({ surface_color: value }); }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+            },
+            {
+              get: () => config.primary_color || defaultConfig.primary_color,
+              set: (value) => { config.primary_color = value; window.elementSdk.setConfig({ primary_color: value }); }
+            },
+            {
+              get: () => config.accent_color || defaultConfig.accent_color,
+              set: (value) => { config.accent_color = value; window.elementSdk.setConfig({ accent_color: value }); }
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => config.font_family || defaultConfig.font_family,
+            set: (value) => { config.font_family = value; window.elementSdk.setConfig({ font_family: value }); }
+          },
+          fontSizeable: {
+            get: () => config.font_size || defaultConfig.font_size,
+            set: (value) => { config.font_size = value; window.elementSdk.setConfig({ font_size: value }); }
+          }
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ['app_title', config.app_title || defaultConfig.app_title],
+          ['hero_title', config.hero_title || defaultConfig.hero_title],
+          ['live_section_title', config.live_section_title || defaultConfig.live_section_title]
+        ])
+      });
+    }
+
+    // Initial render
+    renderLiveGames(defaultConfig);
+    renderUpcomingGames(defaultConfig);
+    renderSportsCategories(defaultConfig);
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d2810b9f4b14621',t:'MTc3MTg2Mzc4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height
